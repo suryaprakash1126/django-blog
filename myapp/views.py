@@ -8,6 +8,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from django.http import HttpResponse
 from io import BytesIO
+import os
+from django.conf import settings
 
 # Register View
 def register_view(request):
@@ -163,17 +165,21 @@ def toggle_like(request, post_id):
 
 @login_required(login_url='login')
 def profile_view(request):
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
+    posts = Blogpost.objects.filter(user=request.user).order_by('-created_at')
+
+    # Make sure avatars folder exists (Render-safe)
+    avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
+    if not os.path.exists(avatar_dir):
+        os.makedirs(avatar_dir)
+
     if request.method == 'POST' and request.FILES.get('avatar'):
+        profile = request.user.userprofile
         profile.avatar = request.FILES['avatar']
         profile.save()
 
-    posts = Blogpost.objects.filter(user=request.user).order_by('-created_at')
-
     return render(request, 'profile.html', {
         'user': request.user,
-        'profile': profile,
+        'profile': request.user.userprofile,
         'posts': posts,
     })
 
