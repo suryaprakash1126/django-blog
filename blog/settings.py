@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -84,15 +85,19 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # }
 
 # ----------------------- postgresql --------------------------
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'blog_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'surya@1126',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blog_db',
-        'USER': 'postgres',
-        'PASSWORD': 'surya@1126',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
 
