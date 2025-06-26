@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static "style.css" %}">
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Header -->
+  <header class="bg-white shadow fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <a href="{% url 'blog_list' %}" class="text-2xl font-bold text-gray-800">My Blog</a>
+      <nav class="flex items-center gap-4">
+        {% if user.is_authenticated %}
+          <span class="text-gray-800">Welcome, <strong>{{ user.username }}</strong></span>
+          <a href="{% url 'create_blog_post_form' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          + Create Post
+          </a>
+          <a href="{% url 'explore' %}" class="text-gray-600 hover:text-gray-800 px-3">Explore</a>
+          <a href="{% url 'logout' %}" class="text-gray-600 hover:text-gray-800">Logout</a>
+
+          <!-- profile img -->
+            <a href="{% url 'profile' %}" class="flex items-center gap-2 px-3 text-gray-600 hover:text-gray-800">
+              <img src="{{ user.userprofile.avatar.url }}" alt="Avatar"
+                  class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm" />
+            </a>
+        {% endif %}
+
+        <!-- explore page back button -->
+        {% if request.path == '/explore/' and user.is_authenticated %}
+          <a href="{% url 'blog_list' %}" 
+            class="text-black bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-md ml-2 transition">
+            ← Back to Home
+          </a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  {% block content%}
+
+  {% endblock %}
+
+  </body>
+</html>

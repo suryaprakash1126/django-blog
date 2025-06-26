@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="mx-auto p-6 mt-20">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+      {% for post in posts %}
+        <div class="bg-white p-4 rounded-xl shadow hover:shadow-md transition">
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ post.title }}</h3>
+
+          <!-- image -->
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Blog Image" class="rounded-xl w-full h-80 object-cover mb-4" />
+          {% endif %}
+
+          <p class="text-gray-600 text-sm">{{ post.summary|truncatechars:100 }}</p>
+          <p class="text-sm text-gray-500 mb-2">
+            {% if user.is_authenticated and post.user == user %}
+                Posted by <span class="font-semibold text-gray-800">you</span>
+            {% else %}
+                Posted by <span class="font-semibold text-gray-800">{{ post.user.username }}</span>
+            {% endif %}
+          </p>
+          <a href="{% url 'blog_detail' post.id %}" class="text-blue-500 hover:underline text-sm">Read more →</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
