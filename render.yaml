@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: django-blog
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn blog.wsgi
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: blog.settings
+      - key: DATABASE_URL
+        sync: false
