@@ -168,14 +168,11 @@ def profile_view(request):
     posts = Blogpost.objects.filter(user=request.user).order_by('-created_at')
 
     if request.method == 'POST' and request.FILES.get('avatar'):
+        # ✅ Safe path based on MEDIA_ROOT
         avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
-
-        # ✅ Use this check only when MEDIA_ROOT is set to /media (Render)
-        if not os.path.exists(avatar_dir):
-            try:
-                os.makedirs(avatar_dir, mode=0o777, exist_ok=True)
-            except PermissionError:
-                print("Permission denied creating avatar folder.")
+        
+        # ✅ Create folder if it doesn't exist
+        os.makedirs(avatar_dir, mode=0o777, exist_ok=True)
 
         profile = request.user.userprofile
         profile.avatar = request.FILES['avatar']

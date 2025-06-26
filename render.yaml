@@ -9,10 +9,5 @@ services:
     startCommand: gunicorn blog.wsgi
     disk:
       name: media
-      mountPath: /media
+      mountPath: /opt/render/project/media
       sizeGB: 1
-    envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: blog.settings
-      - key: DATABASE_URL
-        sync: false
