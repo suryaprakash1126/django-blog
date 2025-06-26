@@ -167,12 +167,16 @@ def toggle_like(request, post_id):
 def profile_view(request):
     posts = Blogpost.objects.filter(user=request.user).order_by('-created_at')
 
-    # Make sure avatars folder exists (Render-safe)
-    avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
-    if not os.path.exists(avatar_dir):
-        os.makedirs(avatar_dir)
-
     if request.method == 'POST' and request.FILES.get('avatar'):
+        avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
+
+        # ✅ Use this check only when MEDIA_ROOT is set to /media (Render)
+        if not os.path.exists(avatar_dir):
+            try:
+                os.makedirs(avatar_dir, mode=0o777, exist_ok=True)
+            except PermissionError:
+                print("Permission denied creating avatar folder.")
+
         profile = request.user.userprofile
         profile.avatar = request.FILES['avatar']
         profile.save()
