@@ -141,13 +141,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_ROOT = '/opt/render/project/media'
 
 RENDER = os.environ.get('RENDER')
 if RENDER:
-    MEDIA_ROOT = '/media'
+    MEDIA_ROOT = '/opt/render/project/media'
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

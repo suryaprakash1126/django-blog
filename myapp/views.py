@@ -96,18 +96,21 @@ def create_blog_post_form(request):
 
 
 @login_required(login_url='login')
+@login_required(login_url='login')
 def blog_update(request, post_id):
-    post = get_object_or_404(Blogpost, id=post_id)
-
-    if post.user != request.user:
-        return redirect('explore')
+    post = get_object_or_404(Blogpost, id=post_id, user=request.user)
 
     if request.method == 'POST':
-        post.title = request.POST.get('title')
-        post.summary = request.POST.get('summary')
-        post.content = request.POST.get('content')
-        if 'image' in request.FILES:
+        post.title = request.POST['title']
+        post.summary = request.POST['summary']
+        post.content = request.POST['content']
+
+        if request.FILES.get('image'):
+            image_dir = os.path.join(settings.MEDIA_ROOT, 'blog_images')
+            os.makedirs(image_dir, exist_ok=True)
+
             post.image = request.FILES['image']
+
         post.save()
         return redirect('blog_detail', post_id=post.id)
 
@@ -168,13 +171,12 @@ def profile_view(request):
     posts = Blogpost.objects.filter(user=request.user).order_by('-created_at')
 
     if request.method == 'POST' and request.FILES.get('avatar'):
-        # ✅ Safe path based on MEDIA_ROOT
-        avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
-        
-        # ✅ Create folder if it doesn't exist
-        os.makedirs(avatar_dir, mode=0o777, exist_ok=True)
-
         profile = request.user.userprofile
+
+        # ✅ Ensure avatar path is correct and writable
+        avatar_dir = os.path.join(settings.MEDIA_ROOT, 'avatars')
+        os.makedirs(avatar_dir, exist_ok=True)  # Create if not exist
+
         profile.avatar = request.FILES['avatar']
         profile.save()
 
