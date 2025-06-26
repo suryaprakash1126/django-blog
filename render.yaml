@@ -12,3 +12,7 @@ services:
         value: blog.settings
       - key: DATABASE_URL
         sync: false
+    disk:
+      name: media
+      mountPath: /media
+      sizeGB: 1
